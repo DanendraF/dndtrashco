@@ -13,15 +13,15 @@
             <i class="fas fa-users"></i>
             <span><a href="{{ route('admin.userlist') }}">USER LIST</a></span>
         </div>
-        <div class="menu-item @if(request()->routeIs('tps')) active @endif">
+        <div class="menu-item @if(request()->routeIs('admin.tps')) active @endif">
             <i class="fas fa-percentage"></i>
             <span><a href="{{ route('admin.tps') }}">TPS</a></span>
         </div>
-        <div class="menu-item @if(request()->routeIs('blog')) active @endif">
+        <div class="menu-item @if(request()->routeIs('admin.blog')) active @endif">
             <i class="fas fa-blog"></i>
             <span><a href="{{ route('admin.blog') }}">BLOG</a></span>
         </div>
-        <div class="menu-item @if(request()->routeIs('market')) active @endif">
+        <div class="menu-item @if(request()->routeIs('admin.market')) active @endif">
             <i class="fas fa-store"></i>
             <span><a href="{{ route('admin.market') }}">MARKET</a></span>
         </div>

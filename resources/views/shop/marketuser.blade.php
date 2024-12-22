@@ -18,7 +18,7 @@
                     waste collectors with recycling industries while promoting circular
                     economy principles through our innovative marketplace platform.
                 </p>
-                <button class="cta-button">STARTED NOW</button>
+                <button class="cta-button" onclick="window.location.href='/marketsection'">STARTED NOW</button>
             </div>
         </div>
 

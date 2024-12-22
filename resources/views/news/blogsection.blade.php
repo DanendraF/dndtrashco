@@ -9,7 +9,6 @@
 </head>
 
 <body class="blog-page">
-    <!-- Navbar -->
     @include('partials.navbar')
 
     <div class="bg-decoration"></div>
@@ -23,38 +22,16 @@
 
         <div class="blog-content">
             <div class="blog-grid">
+                @foreach($blogs as $blog)
                 <div class="blog-card">
-                    <img src="{{ asset('assets/bghome.jpg') }}" alt="Blog Image">
+                    <img src="{{ $blog->cover_image ? asset('storage/' . $blog->cover_image) : asset('') }}" alt="Blog Image">
                     <div class="card-content">
-                        <div class="date">May 19, 2005</div>
-                        <h3>Do you think I have forgotten? About You</h3>
-                        <a href="#" class="read-more">Read More</a>
+                        <div class="date">{{ $blog->created_at->format('F d, Y') }}</div>
+                        <h3>{{$blog->title}}</h3>
+                        <a href="{{ route('news.blogdetails', $blog->slug) }}" class="read-more">Read More</a>
                     </div>
                 </div>
-                <div class="blog-card">
-                    <img src="{{ asset('assets/bghome.jpg') }}" alt="Blog Image">
-                    <div class="card-content">
-                        <div class="date">May 19, 2005</div>
-                        <h3>Do you think I have forgotten? About You</h3>
-                        <a href="#" class="read-more">Read More</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="{{ asset('assets/bghome.jpg') }}" alt="Blog Image">
-                    <div class="card-content">
-                        <div class="date">May 19, 2005</div>
-                        <h3>Do you think I have forgotten? About You</h3>
-                        <a href="#" class="read-more">Read More</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="{{ asset('assets/bghome.jpg') }}" alt="Blog Image">
-                    <div class="card-content">
-                        <div class="date">May 19, 2005</div>
-                        <h3>Do you think I have forgotten? About You</h3>
-                        <a href="#" class="read-more">Read More</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

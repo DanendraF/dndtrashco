@@ -22,7 +22,7 @@
                     based application, this system allows real-time monitoring of the location and
                     route taken by waste collection vehicles.
                 </p>
-                <button class="cta-button">STARTED NOW</button>
+                <button class="cta-button" onclick="window.location.href='/tpssection'">STARTED NOW</button>
             </div>
         </div>
 

@@ -1,0 +1,179 @@
+/* Reset dan Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo h1 {
+    font-family: 'Pacifico', cursive;
+    color: #006B3E;
+    font-size: 28px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    padding-bottom: 5px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #006B3E;
+}
+
+.nav-links a.active {
+    color: #006B3E;
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #006B3E;
+}
+
+.bg-decoration {
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 800px;
+    height: 800px;
+    background-color: rgba(0, 107, 62, 0.1);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.bg-decoration-2 {
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background-color: rgba(0, 107, 62, 0.1);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Global Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Title and Description */
+.container h2 {
+    margin-top: 10%;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-family: 'Pacifico', cursive;
+}
+
+.container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+/* Card Container */
+.card-container {
+    display: flex; /* Flexbox untuk tata letak horizontal */
+    flex-wrap: wrap; /* Supaya responsif jika layar kecil */
+    gap: 20px; /* Jarak antar kartu */
+    justify-content: center; /* Pusatkan elemen secara horizontal */
+}
+
+/* Card Style */
+.card {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.card .rating i {
+    color: #ffcc00;
+    margin: 2px;
+}
+
+/* Hover Effect */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .card-container {
+        flex-direction: column; /* Tata letak berubah ke vertikal */
+        align-items: center; /* Elemen tetap di tengah */
+    }
+
+    .card {
+        width: 90%; /* Kartu memenuhi sebagian besar layar */
+    }
+}
