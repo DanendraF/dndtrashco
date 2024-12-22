@@ -43,7 +43,7 @@
                     </tbody>
                 </table>
 
-                <button class="add-button" onclick="openPopup()">
+                <button class="add-button" onclick="openPopup(false)">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
@@ -81,16 +81,7 @@
 
                 <div class="form-group">
                     <label>Content</label>
-                    <div class="rich-text-editor">
-                        <div class="editor-toolbar">
-                            <button type="button"><i class="fas fa-bold"></i></button>
-                            <button type="button"><i class="fas fa-italic"></i></button>
-                            <button type="button"><i class="fas fa-list-ul"></i></button>
-                            <button type="button"><i class="fas fa-list-ol"></i></button>
-                            <button type="button"><i class="fas fa-link"></i></button>
-                        </div>
-                        <textarea name="content" placeholder="Write your blog content here..." rows="10" required></textarea>
-                    </div>
+                    <textarea name="content" placeholder="Write your blog content here..." rows="10" required></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -108,10 +99,71 @@
         </div>
     </div>
 
+    @if(session('success'))
+        <div class="notification-popup success">
+            <div class="notification-content">
+                <p>{{ session('success') }}</p>
+                <button class="close-notification" onclick="this.parentElement.parentElement.style.display='none'">Close</button>
+            </div>
+        </div>
+    @endif
+
+
     <script>
-        function openPopup() {
+        function openPopup(isEdit = false, blogData = null) {
             document.getElementById('blogPopup').classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            const popupHeader = document.querySelector('.popup-header h3');
+            const submitButton = document.querySelector('.submit-btn');
+            const form = document.querySelector('.blog-form');
+
+            // Kondisi untuk menampilkan form tambah atau edit
+            if (isEdit && blogData) {
+                popupHeader.textContent = 'Edit Blog Post';
+                submitButton.textContent = 'Update Post';
+
+                // Isi form dengan data yang akan diedit
+                document.querySelector('input[name="title"]').value = blogData.title;
+                document.querySelector('textarea[name="content"]').value = blogData.content;
+                const imagePreview = document.getElementById('imagePreview');
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+                imagePreview.src = `/storage/${blogData.cover_image}`;
+                imagePreviewContainer.style.display = 'block';
+
+                // Ubah action URL untuk update
+                form.action = `/admin/blog/${blogData.id}`;
+                form.method = 'POST';
+
+                // Tambahkan input hidden untuk method PUT
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    form.appendChild(methodInput);
+                }
+                methodInput.value = 'PUT';
+            } else {
+                popupHeader.textContent = 'Add New Blog Post';
+                submitButton.textContent = 'Publish Post';
+
+                // Reset form untuk input baru
+                form.reset();
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+                imagePreviewContainer.style.display = 'none';
+
+                // Set action URL untuk store
+                form.action = '/admin/blog';
+                form.method = 'POST';
+
+                // Hapus input hidden jika ada
+                const methodInput = form.querySelector('input[name="_method"]');
+                if (methodInput) {
+                    methodInput.remove();
+                }
+            }
         }
 
         function closePopup() {
@@ -123,9 +175,9 @@
             const file = event.target.files[0];
             const reader = new FileReader();
 
-            reader.onload = function(e) {
-                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            reader.onload = function (e) {
                 const imagePreview = document.getElementById('imagePreview');
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
                 imagePreview.src = e.target.result;
                 imagePreviewContainer.style.display = 'block';
             };
@@ -135,86 +187,50 @@
             }
         }
 
-        function editBlog(blogId) {
-            fetch(`/admin/blog/${blogId}/edit`)
-                .then(response => response.json())
-                .then(data => {
-                    document.querySelector('input[name="title"]').value = data.title;
-                    document.querySelector('textarea[name="content"]').value = data.content;
-                    document.querySelector('#imagePreview').src = '/storage/' + data.cover_image;
-                    document.querySelector('#imagePreviewContainer').style.display = 'block';
-                    let form = document.querySelector('.blog-form');
-                    form.action = `/admin/blog/${data.id}`;
-                    form.method = 'POST';
-
-                    let methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PUT';
-                    form.appendChild(methodInput);
-
-                    openPopup();
-                })
-                .catch(error => {
-                    showNotification('Failed to load blog data for editing.', false);
-                });
-        }
-
-        document.querySelector('.blog-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            fetch(this.action, {
-                method: this.method,
-                body: new FormData(this),
-            })
-            .then(response => response.json())
-            .then(data => {
-                showNotification('Blog post created/updated successfully!');
-                closePopup();
-                location.reload(); // Reload page to see the changes
-            })
-            .catch(error => {
-                showNotification('Failed to create/update the blog post.', false);
-            });
-        });
-
         function deleteBlog(blogId) {
             if (confirm('Are you sure you want to delete this blog post?')) {
-                fetch(`/admin/blog/${blogId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('Blog post deleted successfully!');
-                        const row = document.querySelector(`tr[data-id="${blogId}"]`);
-                        if (row) row.remove(); // Remove row from table
-                    } else {
-                        showNotification('Failed to delete the blog post.', false);
-                    }
-                })
-                .catch(error => {
-                    showNotification('Failed to delete the blog post.', false);
-                });
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/blog/${blogId}`;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+
+                document.body.appendChild(form);
+                form.submit();
             }
         }
 
-        function showNotification(message, isSuccess = true) {
-            const popup = document.getElementById('notificationPopup');
-            const messageElement = document.getElementById('notificationMessage');
-            messageElement.textContent = message;
-            popup.classList.add(isSuccess ? 'success' : 'error');
-            popup.style.display = 'block';
+        function editBlog(blogId) {
+            const blogRow = document.querySelector(`tr[data-id="${blogId}"]`);
+
+            // Ambil data blog dari elemen baris
+            const title = blogRow.querySelector('td:nth-child(2)').innerText;
+            const content = blogRow.querySelector('td:nth-child(3)').innerText;
+            const coverImage = blogRow.querySelector('img').getAttribute('src');
+
+            // Panggil fungsi `openPopup` dengan mode edit
+            openPopup(true, {
+                id: blogId,
+                title: title,
+                content: content,
+                cover_image: coverImage.replace('/storage/', '') // Hapus prefix jika ada
+            });
         }
 
-        function closeNotificationPopup() {
-            const popup = document.getElementById('notificationPopup');
-            popup.style.display = 'none';
-            popup.classList.remove('success', 'error');
-        }
+
     </script>
+
 </body>
 </html>

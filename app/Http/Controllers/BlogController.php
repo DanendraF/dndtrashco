@@ -17,36 +17,27 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
-            'cover_image' => 'required|image',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        $coverImage = $request->file('cover_image');
-        $imagePath = $coverImage->store('images', 'public');
-
-        $blogPost = BlogPost::create([
-            'cover_image' => $imagePath,
-            'title' => $request->title,
-            'content' => $request->content,
-            'slug' => Str::slug($request->title)
-        ]);
-
-        if ($blogPost) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Blog post added successfully.',
-                'data' => $blogPost,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create blog post.'
-            ], 500);
+        $imagePath = null;
+        if ($request->hasFile('cover_image')) {
+            $imagePath = $request->file('cover_image')->store('blog_images', 'public');
         }
+
+        BlogPost::create([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'slug' => Str::slug($request->title),
+            'cover_image' => $imagePath,
+        ]);
+
+        return redirect()->back()->with('success', 'Blog post created successfully.');
     }
+
 
     public function edit($id)
     {
@@ -67,39 +58,25 @@ class BlogController extends Controller
         $blog->content = $request->input('content');
         $blog->slug = Str::slug($request->title);
 
-        // Jika ada gambar baru, simpan
         if ($request->hasFile('cover_image')) {
             $imagePath = $request->file('cover_image')->store('blog_images', 'public');
             $blog->cover_image = $imagePath;
         }
 
-        // Menyimpan perubahan
         $blog->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Blog post updated successfully.',
-            'data' => $blog
-        ]);
+        return redirect()->back()->with('success', 'Blog post updated successfully.');
     }
+
 
     public function destroy($id)
     {
         $blog = BlogPost::findOrFail($id);
-        $deleted = $blog->delete();
+        $blog->delete();
 
-        if ($deleted) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Blog post deleted successfully.'
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete blog post.'
-            ], 500);
-        }
+        return redirect()->back()->with('success', 'Blog post deleted successfully.');
     }
+
 
     public function blogsection()
     {

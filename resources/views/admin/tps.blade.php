@@ -128,6 +128,12 @@
         </div>
     </div>
 
+    <div id="successPopup" class="popup-notification" style="display: none;">
+        <p id="successMessage"></p>
+        <button onclick="closeSuccessPopup()">Close</button>
+    </div>
+
+
     <script>
         function openPopup() {
             document.getElementById('addTpsPopup').classList.add('active');
@@ -139,30 +145,47 @@
             document.body.style.overflow = 'auto';
         }
 
+        function showSuccessPopup(message) {
+            const popup = document.getElementById('successPopup');
+            const messageElement = document.getElementById('successMessage');
+
+            messageElement.innerText = message;
+            popup.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Mencegah scrolling
+        }
+
+        function closeSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            popup.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Memungkinkan scrolling
+}
+
         function deleteTps(tpsId) {
             if (confirm('Are you sure you want to delete this TPS?')) {
                 fetch(`/tps/${tpsId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.querySelector(`tr[data-id="${tpsId}"]`).remove();
-                            alert('TPS deleted successfully.');
-                        } else {
-                            alert('Error deleting TPS.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('There was an error while deleting the TPS.');
-                    });
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector(`tr[data-id="${tpsId}"]`).remove();
+                        showSuccessPopup(data.message);
+                    } else {
+                        alert('Error deleting TPS.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error while deleting the TPS.');
+                });
             }
         }
+
+
 
         function editTps(tpsId) {
             fetch(`/tps/${tpsId}/edit`)
@@ -195,6 +218,7 @@
                     alert('There was an error loading the TPS data.');
                 });
         }
+
 
         function previewImage(event) {
             const file = event.target.files[0];

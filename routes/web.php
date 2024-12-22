@@ -36,38 +36,6 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
-//middleware dn
-// Route::group([], function () {
-//     Route::get('/home', function () {
-//         return view('home');
-//     })->name('home');
-
-//     Route::get('/tps', function () {
-//         return view('tps.tpsuser');
-//     })->name('tps');
-
-//     Route::get('/blog', function () {
-//         return view('news.bloguser');
-//     })->name('blog');
-
-//     Route::get('/shop', function () {
-//         return view('shop.marketuser');
-//     })->name('shop');
-
-//     Route::get('/profile', function () {
-//         return view('profile.profile');
-//     })->name('profile');
-
-//     Route::get('/blogsection', function () {
-//         return view('news.blogsection');
-//     })->name('blogsection');
-
-//     Route::get('/blogdetails', function () {
-//         return view('news.blogdetails');
-//     })->name('blogdetails');
-// });
-
-
 
 //user
 Route::group(['middleware' => 'auth'], function () {
@@ -115,6 +83,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/tps', [TpsController::class, 'index'])->name('admin.tps');
     Route::post('/tps/store', [TpsController::class, 'store'])->name('admin.tps.store');
     Route::get('/tps/{id}/edit', [TpsController::class, 'edit'])->name('admin.tps.edit');
+    Route::match(['put', 'patch'], '/tps/{id}', [TpsController::class, 'update'])->name('admin.tps.update');
     Route::put('/tps/{id}/update', [TpsController::class, 'update'])->name('admin.tps.update');
     Route::delete('/tps/{id}', [TpsController::class, 'destroy'])->name('admin.tps.destroy');
 

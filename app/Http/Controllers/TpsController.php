@@ -43,14 +43,6 @@ class TpsController extends Controller
         $tps->save();
 
 
-        return response()->json([
-            'success' => true,
-            'name' => $tps->name,
-            'location' => $tps->location,
-            'image' => $tps->image,
-            'rating' => '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>',
-        ]);
-
         return redirect()->route('admin.tps')->with('success', 'TPS added successfully!');
     }
 
@@ -76,11 +68,13 @@ class TpsController extends Controller
         }
 
     public function destroy($id)
-        {
-            $tps = Tps::findOrFail($id);
-            $tps->delete();
-            return redirect()->route('admin.tps')->with('success', 'TPS deleted successfully!');
-        }
+    {
+        $tps = Tps::findOrFail($id);
+        $tps->delete();
+
+        return response()->json(['success' => true, 'message' => 'TPS deleted successfully.']);
+    }
+
 
     public function tpssection()
     {
