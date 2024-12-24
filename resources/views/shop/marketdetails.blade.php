@@ -31,11 +31,13 @@
 
            <!-- Product Info -->
            <h2>{{ $marketItem->item_name }}</h2>
-           <p class="condition">{{ $marketItem->status }}</p>
-           <p class="price">IDR {{ number_format($marketItem->price, 0, ',', '.') }}</p>
-           <p class="description">{{ $marketItem->description }}</p>
-           <button class="contact-seller">Contact Seller</button>
-       </div>
+            <p class="condition">{{ $marketItem->status }}</p>
+            <p class="price">IDR {{ number_format($marketItem->price, 0, ',', '.') }}</p>
+            <p class="description">{{ $marketItem->description }}</p>
+            <button class="contact-seller" onclick="showPopup('{{ $marketItem->seller_name }}', '{{ $marketItem->address }}', '{{ $marketItem->phone_number }}')">
+                    Contact Seller
+            </button>
+            </div>
 
 
         <div class="recommendation-section">
@@ -57,6 +59,36 @@
             </div>
         </div>
 
+        <div id="seller-info-popup" class="popup-overlay" style="display: none;">
+            <div class="popup-content">
+                <button class="close-button" onclick="closePopup()">×</button>
+                <h2>Seller Information</h2>
+                <p><strong>Name:</strong> <span id="seller-name"></span></p>
+                <p><strong>Address:</strong> <span id="seller-address"></span></p>
+                <p><strong>Phone:</strong> <span id="seller-phone"></span></p>
+            </div>
+        </div>
+
+
+
    </div>
 </body>
+<script>
+    function showPopup(sellerName, sellerAddress, sellerPhone) {
+        document.getElementById('seller-name').innerText = sellerName;
+        document.getElementById('seller-address').innerText = sellerAddress;
+        document.getElementById('seller-phone').innerText = sellerPhone;
+        document.getElementById('seller-info-popup').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('seller-info-popup').style.display = 'none';
+    }
+
+    function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('show');
+    }
+
+</script>
 </html>

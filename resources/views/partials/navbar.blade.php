@@ -25,5 +25,11 @@
                 <a href="{{ url('profile') }}" class="{{ Request::is('profile') ? 'active' : '' }}">Profile</a>
             </li>
         </ul>
+        <!-- Hamburger Menu -->
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 </nav>
